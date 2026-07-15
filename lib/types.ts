@@ -11,7 +11,7 @@ export interface SpeakerItem {
     type: 'speaker' | 'musical-number';
 }
 
-export interface WardBuisnessItem {
+export interface WardBusinessItem {
     description: string;
 }
 
@@ -24,7 +24,7 @@ export interface SacramentMeeting {
     announcements?: string[];
     openingHymn: Hymn;
     openingPrayer: string;
-    wardBusiness?: WardBuisnessItem[];
+    wardBusiness?: WardBusinessItem[];
     stakeBusiness: boolean;
     sacramentHymn: Hymn;
     speakers: SpeakerItem[];
