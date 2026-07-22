@@ -10,7 +10,7 @@ import { getMeetings } from "@/lib/meetings-db";
 
   const currentSunday = upcomingSunday.toLocaleDateString("en-CA")
 
-export default async function MeetingHome() {
+export default async function CurrentMeeting() {
     
 
     const upcomingMeeting = getMeetings(currentSunday);

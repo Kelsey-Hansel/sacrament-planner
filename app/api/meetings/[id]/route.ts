@@ -14,5 +14,5 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     return Response.json(meeting, { status: 200 });
   } catch (error) {
     return new Response(`Internal Server Error: ${error}`, { status: 500 });
-    }
+  }
 }

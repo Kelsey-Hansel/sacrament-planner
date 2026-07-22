@@ -4,7 +4,7 @@ interface MeetingDetailProps {
   meeting: SacramentMeeting | null;
 }
 
-export default async function MeetingDetail({ meeting }: MeetingDetailProps) {
+export default function MeetingDetail({ meeting }: MeetingDetailProps) {
   if (!meeting) {
     return "Meeting not found";
   }
