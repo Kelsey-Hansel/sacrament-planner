@@ -15,7 +15,10 @@ export default async function CurrentMeeting() {
   const day = String(upcomingSunday.getDate()).padStart(2, "0");
   const currentSunday = `${year}-${month}-${day}`;
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://localhost:3000");
+
   
   const response = await fetch(
     `${baseUrl}/api/meetings?date=${encodeURIComponent(currentSunday)}`,
