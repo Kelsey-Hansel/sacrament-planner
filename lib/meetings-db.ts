@@ -9,59 +9,52 @@ export async function getMeetings(
   query: string = '',
   currentPage: number = 1
 ): Promise<SacramentMeeting[]> {
-  const searchTerm = `%${query}%`;
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
   const isDateQuery = /^\d{4}-\d{2}-\d{2}$/.test(query);
+
+  const selectClause = sql`
+    SELECT 
+      id, 
+      to_char(date, 'YYYY-MM-DD') AS "date", 
+      meeting_type AS "meetingType", 
+      presiding, 
+      conducting, 
+      announcements, 
+      opening_hymn AS "openingHymn", 
+      opening_prayer AS "openingPrayer", 
+      ward_business AS "wardBusiness", 
+      stake_business AS "stakeBusiness", 
+      sacrament_hymn AS "sacramentHymn", 
+      speakers, 
+      closing_hymn AS "closingHymn", 
+      closing_prayer AS "closingPrayer"
+    FROM meetings
+  `;
+
+  let rows;
+
   if (isDateQuery) {
-    const rows = await sql`
-      SELECT 
-        id, 
-        to_char(date, 'YYYY-MM-DD') AS "date", 
-        meeting_type AS "meetingType", 
-        presiding, 
-        conducting, 
-        announcements, 
-        opening_hymn AS "openingHymn", 
-        opening_prayer AS "openingPrayer", 
-        ward_business AS "wardBusiness", 
-        stake_business AS "stakeBusiness", 
-        sacrament_hymn AS "sacramentHymn", 
-        speakers, 
-        closing_hymn AS "closingHymn", 
-        closing_prayer AS "closingPrayer"
-      FROM meetings
-      WHERE date = ${query}::date
+    rows = await sql`
+      ${selectClause}
+      WHERE date = ${query}
       ORDER BY date DESC
       LIMIT ${ITEMS_PER_PAGE}
       OFFSET ${offset}
     `;
-    return rows as unknown as SacramentMeeting[];
+  } else {
+    const searchTerm = `%${query}%`;
+    rows = await sql`
+      ${selectClause}
+      WHERE presiding ILIKE ${searchTerm}
+         OR conducting ILIKE ${searchTerm}
+         OR meeting_type ILIKE ${searchTerm}
+         OR speakers::text ILIKE ${searchTerm}
+      ORDER BY date DESC
+      LIMIT ${ITEMS_PER_PAGE}
+      OFFSET ${offset}
+    `;
   }
 
-  const rows = await sql`
-    SELECT
-      id,
-      to_char(date, 'YYYY-MM-DD') AS "date",
-      meeting_type                AS "meetingType",
-      presiding, conducting, announcements,
-      opening_hymn                AS "openingHymn",
-      opening_prayer              AS "openingPrayer",
-      ward_business               AS "wardBusiness",
-      stake_business              AS "stakeBusiness",
-      sacrament_hymn              AS "sacramentHymn",
-      speakers,
-      closing_hymn                AS "closingHymn",
-      closing_prayer              AS "closingPrayer"
-    FROM meetings
-    WHERE
-      presiding     ILIKE ${searchTerm}
-      OR conducting ILIKE ${searchTerm}
-      OR meeting_type ILIKE ${searchTerm}
-      OR speakers::text ILIKE ${searchTerm}
-    ORDER BY date DESC
-    LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-  `;
   return rows as unknown as SacramentMeeting[];
 }
 
