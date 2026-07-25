@@ -1,5 +1,7 @@
 import MeetingDetail from "@/components/MeetingDetail";
 
+export const dynamic = "force-dynamic";
+
 export default async function CurrentMeeting() {
   const currentDate = new Date();
   
@@ -17,7 +19,7 @@ export default async function CurrentMeeting() {
 
 const baseUrl = process.env.VERCEL_URL 
   ? `https://${process.env.VERCEL_URL}` 
-  : (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://localhost:3000");
+  : "http://localhost:3000";
 
 
   
