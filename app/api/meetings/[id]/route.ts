@@ -5,14 +5,14 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const paramsObject = await params;
     const meetingId = parseInt(paramsObject.id, 10);
     if (isNaN(meetingId)) {
-      return new Response("Invalid meeting ID", { status: 400 });
+      return Response.json("Invalid meeting ID", { status: 400 });
     }
     const meeting = await getMeetingById(meetingId);
     if (!meeting) {
-      return new Response("Meeting not found", { status: 404 });
+      return Response.json("Meeting not found", { status: 404 });
     }
     return Response.json(meeting, { status: 200 });
   } catch (error) {
-    return new Response(`Internal Server Error: ${error}`, { status: 500 });
+    return Response.json(`Internal Server Error: ${error}`, { status: 500 });
   }
 }
