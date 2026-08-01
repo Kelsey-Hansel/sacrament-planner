@@ -1,6 +1,5 @@
 import MeetingDetails from "@/components/MeetingDetail";
-import { SacramentMeeting } from "@/lib/types";
-import { headers } from "next/headers";
+import { getMeetingById } from "@/lib/meetings-db";
 
 export const dynamic = "force-dynamic";
 
@@ -16,25 +15,7 @@ export default async function MeetingDetailsPage({ params }: Props) {
     return <p className="p-4">Invalid meeting ID.</p>;
   }
 
-  const headersList = await headers();
-  const host = headersList.get("host") || "localhost:3000";
-
-  const protocol = host.includes("localhost") ? "http" : "https";
-  const baseUrl = `${protocol}://${host}`;
-
-  const response = await fetch(`${baseUrl}/api/meetings/${meetingId}`, {
-    cache: "no-store",
-    headers: {
-      "host": host
-    }
-  });
-
-  if (!response.ok) {
-    console.error(`API response failed with status ${response.status}`);
-    return <p className="p-4">Meeting not found.</p>;
-  }
-
-  const meetingDetails: SacramentMeeting = await response.json();
+  const meetingDetails = await getMeetingById(meetingId);
 
   return (
     <section className="p-4">

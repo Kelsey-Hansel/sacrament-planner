@@ -31,19 +31,17 @@ export async function getMeetings(
     FROM meetings
   `;
 
-  let rows;
-
   if (isDateQuery) {
-    rows = await sql`
+    return await sql`
       ${selectClause}
       WHERE date = ${query}
       ORDER BY date DESC
       LIMIT ${ITEMS_PER_PAGE}
       OFFSET ${offset}
-    `;
+    ` as unknown as SacramentMeeting[];
   } else {
     const searchTerm = `%${query}%`;
-    rows = await sql`
+    return await sql`
       ${selectClause}
       WHERE presiding ILIKE ${searchTerm}
          OR conducting ILIKE ${searchTerm}
@@ -52,10 +50,8 @@ export async function getMeetings(
       ORDER BY date DESC
       LIMIT ${ITEMS_PER_PAGE}
       OFFSET ${offset}
-    `;
+    ` as unknown as SacramentMeeting[];
   }
-
-  return rows as unknown as SacramentMeeting[];
 }
 
 export async function getMeetingsTotalPages(
@@ -95,19 +91,74 @@ export async function getMeetingById(
   return (rows[0] as unknown as SacramentMeeting) ?? null;
 }
 
-export async function addMeeting(
-  data: Omit<SacramentMeeting, 'id'>
-): Promise<SacramentMeeting> {
-  throw new Error('addMeeting: database implementation coming in Week 04');
+export async function addMeeting( data: Omit<SacramentMeeting, 'id'> ): Promise<SacramentMeeting> {
+  const rows = await sql`
+    INSERT INTO meetings (
+      date, 
+      meeting_type, 
+      presiding, 
+      conducting, 
+      announcements, 
+      opening_hymn, 
+      opening_prayer, 
+      ward_business, 
+      stake_business, 
+      sacrament_hymn, 
+      speakers, 
+      closing_hymn, 
+      closing_prayer
+    ) 
+    VALUES (
+      ${data.date},
+      ${data.meetingType},
+      ${data.presiding},
+      ${data.conducting},
+      ${JSON.stringify(data.announcements ?? [])},
+      ${JSON.stringify(data.openingHymn)},
+      ${data.openingPrayer},
+      ${JSON.stringify(data.wardBusiness ?? [])},
+      ${data.stakeBusiness},
+      ${JSON.stringify(data.sacramentHymn)},
+      ${JSON.stringify(data.speakers)},
+      ${JSON.stringify(data.closingHymn)},
+      ${data.closingPrayer}
+    )
+    RETURNING *;
+  `;
+
+  return (rows[0] as unknown as SacramentMeeting) ?? null;
 }
 
-export async function updateMeeting(
-  id: number,
-  updates: Partial<SacramentMeeting>
-): Promise<SacramentMeeting | null> {
-  throw new Error('updateMeeting: database implementation coming in Week 04');
+export async function editMeeting( id: number, updates: Partial<SacramentMeeting> ): Promise<SacramentMeeting | null> {
+  const rows = await sql`
+    UPDATE meetings 
+    SET
+      date = COALESCE(${updates.date}, date), 
+      meeting_type = COALESCE(${updates.meetingType}, meeting_type), 
+      presiding = COALESCE(${updates.presiding}, presiding), 
+      conducting = COALESCE(${updates.conducting}, conducting), 
+      announcements = COALESCE(${updates.announcements}, announcements), 
+      opening_hymn = COALESCE(${updates.openingHymn}, opening_hymn), 
+      opening_prayer = COALESCE(${updates.openingPrayer}, opening_prayer), 
+      ward_business = COALESCE(${updates.wardBusiness}, ward_business), 
+      stake_business = COALESCE(${updates.stakeBusiness}, stake_business), 
+      sacrament_hymn = COALESCE(${updates.sacramentHymn}, sacrament_hymn), 
+      speakers = COALESCE(${updates.speakers}, speakers), 
+      closing_hymn = COALESCE(${updates.closingHymn}, closing_hymn), 
+      closing_prayer = COALESCE(${updates.closingPrayer}, closing_prayer)
+    WHERE id = ${id}
+    RETURNING *;
+  `;
+
+  return (rows[0] as unknown as SacramentMeeting) ?? null;
 }
 
-export async function deleteMeeting(id: number): Promise<boolean> {
-  throw new Error('deleteMeeting: database implementation coming in Week 04');
+export async function removeMeeting(id: number): Promise<boolean> {
+  const rows = await sql`
+    DELETE FROM meetings
+    WHERE id = ${id}
+    RETURNING id;
+  `;
+
+  return rows.length > 0;
 }
