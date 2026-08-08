@@ -7,6 +7,10 @@ export default async function AdminEdit(props: { params: Promise<{ id: string }>
   const params = await props.params;
   const id = parseInt(params.id, 10);
 
+  if (isNaN(id)) {
+    return <section className="text-black"><h1>Loading...</h1></section>;
+  }
+
   const initialData = await getMeetingById(id);
 
   if (!initialData) {
