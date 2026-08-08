@@ -3,6 +3,8 @@
 import { useActionState } from 'react';
 import { authenticate } from '@/lib/actions';
 
+export const dynamic = 'force-dynamic';
+
 export function LoginForm() {
   const [errorMessage, formAction, isPending] = useActionState(
     authenticate,

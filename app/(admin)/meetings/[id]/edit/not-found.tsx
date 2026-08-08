@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-export default function NotFound() {
+export default async function NotFound() {
     return (
         <section>
             <h1>Meeting Not Found</h1>

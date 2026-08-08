@@ -1,5 +1,7 @@
 import type { NextAuthConfig } from 'next-auth';
 
+export const dynamic = 'force-dynamic';
+
 export const authConfig = {
   pages: {
     signIn: '/login', 

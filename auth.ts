@@ -5,6 +5,8 @@ import bcrypt from 'bcryptjs';
 import { authConfig } from './auth.config';
 import { getUserByEmail } from '@/lib/meetings-db';
 
+export const dynamic = 'force-dynamic';
+
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [

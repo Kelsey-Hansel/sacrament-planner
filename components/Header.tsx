@@ -2,10 +2,12 @@ import NavLinks from "@/components/NavLinks";
 import { auth } from "@/auth";
 import { SignOutButton } from "@/components/SignOutButton";
 
-const session = await auth();
-const user = session?.user;
+export const dynamic = 'force-dynamic';
 
 export default async function Header() {
+    const session = await auth();
+    const user = session?.user;
+
     return (
         <header className="bg-blue-500 text-white p-4 flex justify-between">
             <div id="header-title" className="text-xl font-bold">
