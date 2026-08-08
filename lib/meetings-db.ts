@@ -162,3 +162,12 @@ export async function removeMeeting(id: number): Promise<boolean> {
 
   return rows.length > 0;
 }
+
+export async function getUserByEmail(email: string): Promise<{ email: string; passwordHash: string } | null> {
+  const rows = await sql`
+    SELECT email, password_hash AS "passwordHash"
+    FROM users
+    WHERE email = ${email}
+  `;
+  return (rows[0] as unknown as {email: string; passwordHash: string }) ?? null;
+}

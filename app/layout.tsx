@@ -11,7 +11,10 @@ const merriweather = Merriweather({
 
 export const metadata: Metadata = {
   title: "Sacrament Planner",
-  description: "Coded by Kelsey Hansel",
+  description: "Sacrament Meeting Planner for LDS Wards",
+  openGraph: {
+    images: "../public/opengraph-image.png",
+  },
 };
 
 export default function RootLayout({

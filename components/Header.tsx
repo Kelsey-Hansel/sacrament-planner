@@ -1,6 +1,11 @@
 import NavLinks from "@/components/NavLinks";
+import { auth } from "@/auth";
+import { SignOutButton } from "@/components/SignOutButton";
 
-export default function Header() {
+const session = await auth();
+const user = session?.user;
+
+export default async function Header() {
     return (
         <header className="bg-blue-500 text-white p-4 flex justify-between">
             <div id="header-title" className="text-xl font-bold">
@@ -11,6 +16,12 @@ export default function Header() {
                     <li><NavLinks href="/">Home</NavLinks></li>
                     <li><NavLinks href="/meetings">All Meetings</NavLinks></li>
                     <li><NavLinks href="/meetings/current">Current Meeting</NavLinks></li>
+                    {user && (
+                        <SignOutButton />
+                    )}
+                    {!user && (
+                        <li><NavLinks href="/login">Sign In</NavLinks></li>
+                    )}
                 </ul>
             </nav>
         </header>

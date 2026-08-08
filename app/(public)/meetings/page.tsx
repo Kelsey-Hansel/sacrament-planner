@@ -2,6 +2,12 @@ import { getMeetings, getMeetingsTotalPages } from "@/lib/meetings-db";
 import MeetingCard from "@/components/MeetingCard";
 import { MeetingSearch } from "@/components/MeetingSearch";
 import { Pagination } from "@/components/Pagination";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sacrament Planner All Meetings Page",
+  description: "Sacrament Meeting Planner for LDS Wards, view all the meetings currently in the planner.",
+};
 
 type Props = {
   searchParams?: Promise<{
